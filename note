@@ -1,1 +1,52 @@
-echo " NOTE INSTALLED! 0.0.1"
+#! /bin/sh
+
+TOKEN_FILE=~/.aibiji/token
+
+function initialize_token(){
+	mkdir -p $(dirname ${TOKEN_FILE}) && touch ${TOKEN_FILE}
+	# TODO-impl: prompt user_name stored
+	read -p "Input your user name: " user_name
+	read -s -p "Password: " password
+	token=$(curl -X POST https://aibiji.xyz/api/v1/token -d "user_name=${user_name}&password=${password}")
+	echo "$user_name $token" | tee ${TOKEN_FILE}
+}
+
+function list_recent(){
+	credential=($(cat ${TOKEN_FILE}))
+	curl -v "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}"
+	echo ""
+}
+
+function search(){
+	keywords=$1
+	echo $keywords
+	echo $keywords
+	echo $keywords
+	credential=($(cat ${TOKEN_FILE}))
+	curl -G --data-urlencode "keyword=${keywords}"  "https://aibiji.xyz/api/v1/search.text?user_name=${credential[0]}&access_token=${credential[1]}"
+	echo 
+}
+
+function add(){
+	contents=$1
+	credential=($(cat ${TOKEN_FILE}))
+	curl -X POST "https://aibiji.xyz/api/v1/note?user_name=${credential[0]}&access_token=${credential[1]}" -d "note=${contents}"
+}
+
+
+if [ $1 = 'ls' ]; then
+	list_recent
+elif [ $1 = 'configure' ]; then
+	initialize_token
+elif [ $1 = 'search' ] || [ $1 = '-s' ]; then
+	#TODO-impl: multi-keywords
+	shift
+	#ks=$(IFS="`" eval 'echo "$*"')
+	search "$*"
+elif [ $1 = 'add' ] || [ $1 = '-a' ]; then
+	#TODO-impl: multi-keywords
+	shift
+	add "$*"
+else
+	echo "Need help? Visit more on https://aibiji.xyz"
+fi
