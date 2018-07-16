@@ -1,4 +1,4 @@
-sudo curl https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/note > /usr/local/bin/note002
-chmod +x /usr/local/bin/note002
-/usr/local/bin/note002
-which note002
+CLI_APP=note2
+curl https://raw.githubusercontent.com/acearth/note-cli/master/note > /tmp/note-cli-tmp
+chmod +x /tmp/note-cli-tmp
+sudo mv /tmp/note-cli-tmp /usr/local/bin/${CLI_APP}
