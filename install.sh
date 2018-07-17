@@ -1,4 +1,3 @@
-set -e
 CLI_APP=note
 #echo "input app name"
 #read CLI_APP
