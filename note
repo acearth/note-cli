@@ -13,15 +13,12 @@ function initialize_token(){
 
 function list_recent(){
 	credential=($(cat ${TOKEN_FILE}))
-	curl -v "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}"
-	echo ""
+	curl "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}"
+	echo
 }
 
 function search(){
 	keywords=$1
-	echo $keywords
-	echo $keywords
-	echo $keywords
 	credential=($(cat ${TOKEN_FILE}))
 	curl -G --data-urlencode "keyword=${keywords}"  "https://aibiji.xyz/api/v1/search.text?user_name=${credential[0]}&access_token=${credential[1]}"
 	echo 
@@ -34,7 +31,7 @@ function add(){
 }
 
 function version(){
-	echo "0.1.0"
+	echo "0.1.1"
 }
 
 function update(){
@@ -63,7 +60,7 @@ elif [ $1 = 'add' ] || [ $1 = '-a' ]; then
 	#TODO-impl: multi-keywords
 	shift
 	add "$*"
-elif [ $1 = 'version' ]; then
+elif [ $1 = 'version' ] || [ $1 = '-v' ]; then
 	version
 elif [ $1 = 'update' ]; then
 	update
