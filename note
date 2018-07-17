@@ -72,6 +72,7 @@ elif [ $1 = 'version' ] || [ $1 = '-v' ]; then
 	version
 elif [ $1 = 'update' ]; then
 	update
+	echo "Version: $(version)"
 elif [ $1 = '-h' ] || [ $1 = '--help' ]; then
 	help
 else
