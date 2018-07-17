@@ -5,7 +5,8 @@ initialize_token() {
 	# TODO-impl: prompt user_name stored
 	read -p "Input your user name: "  user_name
 	read -s -p "Password: " password
-	token=$(curl --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/token -d "user_name=${user_name}&password=${password}")
+	echo
+	token=$(curl --silent --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/token -d "user_name=${user_name}&password=${password}")
 	echo "$user_name $token" | tee ${TOKEN_FILE}
 }
 
