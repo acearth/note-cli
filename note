@@ -12,7 +12,8 @@ initialize_token() {
 
 list_recent() {
 	credential=($(cat ${TOKEN_FILE}))
-	curl --retry-max-time 7 --connect-timeout 5 "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}"
+        default_size=6
+        curl "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}&size=${default_size}"
 	echo
 }
 
@@ -30,7 +31,7 @@ add() {
 }
 
 version() {
-	echo "0.1.4"
+	echo "0.1.5"
 }
 
 update() {
