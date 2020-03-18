@@ -2,36 +2,40 @@ TOKEN_FILE=~/.aibiji/token
 
 initialize_token() {
 	mkdir -p $(dirname ${TOKEN_FILE}) && touch ${TOKEN_FILE}
-	# TODO-impl: prompt user_name stored
-	read -p "Input your user name: "  user_name
+	# TODO-impl: prompt username stored
+	read -p "Input your user name: "  username
 	read -s -p "Password: " password
 	echo
-	token=$(curl --silent --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/token -d "user_name=${user_name}&password=${password}")
-	echo "$user_name $token" | tee ${TOKEN_FILE}
+	token=$(curl --silent --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/jwt.text --datd "username=${username}&password=${password}")
+	if [ $? -eq 0 ]; then
+		echo "success"
+	else
+		echo "Please retry "
+	fi
 }
 
 list_recent() {
-	credential=($(cat ${TOKEN_FILE}))
         default_size=6
-        curl "https://aibiji.xyz/api/v1/recent?user_name=${credential[0]}&access_token=${credential[1]}&size=${default_size}"
+	token=($(cat ${TOKEN_FILE}))
+        curl --header "Authorization: Bearer ${token}" https://aibiji.xyz/api/v1/user_note/recent.text?size=${default_size}
 	echo
 }
 
 search() {
 	keywords=$1
 	credential=($(cat ${TOKEN_FILE}))
-	curl --retry-max-time 7 --connect-timeout 5 -G --data-urlencode "keyword=${keywords}"  "https://aibiji.xyz/api/v1/search.text?user_name=${credential[0]}&access_token=${credential[1]}"
+	curl --retry-max-time 7 --connect-timeout 5 -G --data-urlencode "keyword=${keywords}"  "https://aibiji.xyz/api/v1/search.text?username=${credential[0]}&access_token=${credential[1]}"
 	echo
 }
 
 add() {
-	contents=$1
-	credential=($(cat ${TOKEN_FILE}))
-	curl --retry-max-time 7 --connect-timeout 5 -X POST "https://aibiji.xyz/api/v1/note?user_name=${credential[0]}&access_token=${credential[1]}" -d "note=${contents}"
+	#contents=$1
+	token=($(cat ${TOKEN_FILE}))
+        curl --header "Authorization: Bearer ${token}"  -X POST https://aibiji.xyz/api/v1/user_note --data "new_note_text=$1"
 }
 
 version() {
-	echo "0.1.5"
+	echo "0.2.0"
 }
 
 update() {
@@ -45,6 +49,7 @@ register() {
 }
 
 help() {
+	echo "ABnote version: $(version) See more on: https://aibiji.xyz"
 	echo "usage: note <command> parameters"
 	echo "       command:"
 	echo "              ls : list recent note"
