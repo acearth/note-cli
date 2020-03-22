@@ -6,7 +6,7 @@ initialize_token() {
 	read -p "Input your user name: "  username
 	read -s -p "Password: " password
 	echo
-	token=$(curl --silent --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/jwt.text --datd "username=${username}&password=${password}")
+	token=$(curl --silent --retry-max-time 7 --connect-timeout 5 -X POST https://aibiji.xyz/api/v1/jwt.text --data "username=${username}&password=${password}")
 	if [ $? -eq 0 ]; then
 		echo "success"
 	else
