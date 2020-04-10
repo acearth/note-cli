@@ -30,13 +30,20 @@ search() {
 }
 
 add() {
-	#contents=$1
 	token=($(cat ${TOKEN_FILE}))
         curl --header "Authorization: Bearer ${token}"  -X POST https://aibiji.xyz/api/v1/user_note --data "new_note_text=$1"
 }
 
+paste() {
+	token=($(cat ${TOKEN_FILE}))
+        curl --header "Authorization: Bearer ${token}"  -X POST https://aibiji.xyz/api/v1/user_note --data "new_note_text=$(pbpaste)"
+	if [ $? -ne 0 ]; then
+		echo "note paste is supported in macOS only now"
+	fi
+}
+
 version() {
-	echo "0.2.0"
+	echo "0.2.1-20200410"
 }
 
 update() {
@@ -65,6 +72,8 @@ help() {
 if [ $# -lt 1 ]; then
 	echo "use -h to see help information"
 	exit
+elif [ $1 = 'pst' ] || [ $1 = 'paste' ]; then
+	paste
 elif [ $1 = 'ls' ]; then
 	list_recent
 elif [ $1 = 'configure' ] || [ $1 = 'cfg' ]; then
